@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.zzapp.goforit.config.JWTConfig
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Configuration
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import java.io.UnsupportedEncodingException
@@ -27,13 +26,13 @@ class JWTUtil {
      *
      * @param id 用户id
      * @param username 用户名
+     * @param expire 过期时间
      *
      * @return token
      */
     @Retryable
-    fun sign(id: Long, username: String): String? {
+    fun sign(id: Long, username: String, expire: Long): String? {
         return try {
-            val date = Date(System.currentTimeMillis() + jwtConfig.expire)
             val algorithm = Algorithm.HMAC256(jwtConfig.secret)
             val header = HashMap<String, Any>(2)
             header["typ"] = "JWT"
@@ -42,7 +41,7 @@ class JWTUtil {
                     .withHeader(header)
                     .withClaim("id", id)
                     .withClaim("username", username)
-                    .withExpiresAt(date)
+                    .withExpiresAt(Date(expire))
                     .sign(algorithm)
         } catch (e: UnsupportedEncodingException) {
             null

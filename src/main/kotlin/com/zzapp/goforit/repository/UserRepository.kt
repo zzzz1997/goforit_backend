@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 /**
- * 用户库
+ * 用户仓库
  */
 @Repository
 interface UserRepository: JpaRepository<User, Long> {
@@ -18,7 +18,7 @@ interface UserRepository: JpaRepository<User, Long> {
      *
      * @return 用户信息
      */
-    fun findOneByUsernameAndPassword(username: String, password: String): User?
+    fun findUserByUsernameAndPassword(username: String, password: String): User?
 
     /**
      * 根据用户名查询用户信息
@@ -27,5 +27,5 @@ interface UserRepository: JpaRepository<User, Long> {
      *
      * @return 用户信息
      */
-    fun findOneByUsername(username: String): User?
+    fun findUserByUsername(username: String): User?
 }

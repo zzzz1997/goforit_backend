@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/user")
 class UserController {
 
-    // 用户库对象
+    // 用户仓库对象
     @Autowired
     lateinit var userRepository: UserRepository
 
@@ -42,7 +42,7 @@ class UserController {
      * 获取单一用户
      */
     @RequestMapping("")
-    fun getUser(@TokenId id: Long): ResponseResult<User> {
+    fun user(@TokenId id: Long): ResponseResult<User> {
         return ResponseUtil.success(userRepository.findById(id).get())
     }
 
@@ -52,11 +52,12 @@ class UserController {
     @WithoutAuth
     @RequestMapping(value = ["/login"], method = [RequestMethod.POST])
     fun login(username: String, password: String): ResponseResult<User> {
-        val user = userRepository.findOneByUsernameAndPassword(username, DigestUtils.sha1Hex(password))
+        val user = userRepository.findUserByUsernameAndPassword(username, DigestUtils.sha1Hex(password))
                 ?: return ResponseUtil.fail("用户名或密码错误")
-        val token = jwtUtil.sign(user.id, user.username) ?: return ResponseUtil.fail("系统错误，请重新尝试")
+        val tokenTime = System.currentTimeMillis() / 1000 + jwtUtil.jwtConfig.expire / 1000
+        val token = jwtUtil.sign(user.id, user.username, tokenTime) ?: return ResponseUtil.fail("系统错误，请重新尝试")
         user.token = token
-        user.tokenTime = (System.currentTimeMillis() / 1000 + jwtUtil.jwtConfig.expire / 1000).toInt()
+        user.tokenTime = tokenTime.toInt()
         return ResponseUtil.success(user)
     }
 
@@ -66,7 +67,7 @@ class UserController {
     @WithoutAuth
     @RequestMapping(value = ["/register"], method = [RequestMethod.POST])
     fun register(username: String, password: String): ResponseResult<User> {
-        var user = userRepository.findOneByUsername(username)
+        var user = userRepository.findUserByUsername(username)
         if (user != null) {
             return ResponseUtil.fail("用户名已存在")
         } else {
@@ -74,10 +75,12 @@ class UserController {
             user.username = username
             user.password = DigestUtils.sha1Hex(password)
             user.avatar = RandomUtil.getRandomAvatar()
+            user.createdTime = System.currentTimeMillis() / 1000
             user = userRepository.save(user)
-            val token = jwtUtil.sign(user.id, user.username) ?: return ResponseUtil.fail("系统错误，请重新尝试")
+            val tokenTime = System.currentTimeMillis() / 1000 + jwtUtil.jwtConfig.expire / 1000
+            val token = jwtUtil.sign(user.id, user.username, tokenTime) ?: return ResponseUtil.fail("系统错误，请重新尝试")
             user.token = token
-            user.tokenTime = (System.currentTimeMillis() / 1000 + jwtUtil.jwtConfig.expire / 1000).toInt()
+            user.tokenTime = tokenTime.toInt()
             return ResponseUtil.success(user)
         }
     }

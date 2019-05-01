@@ -1,10 +1,7 @@
 package com.zzapp.goforit.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 /**
  * 用户实体类
@@ -12,8 +9,10 @@ import javax.persistence.Table
 @Entity
 @Table(name = "user")
 class User {
+
     // id
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 
     // 用户名
