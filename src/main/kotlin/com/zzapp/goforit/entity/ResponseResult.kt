@@ -1,5 +1,7 @@
 package com.zzapp.goforit.entity
 
+import net.sf.json.JSONObject
+
 /**
  * 返回体实体
  */
@@ -48,5 +50,14 @@ class ResponseResult<T> {
     fun setData(data: T): ResponseResult<T> {
         this.data = data
         return this
+    }
+
+    /**
+     * 返回json字符串
+     *
+     * @return json字符串
+     */
+    fun toJsonString(): String {
+        return JSONObject.fromObject(this).toString()
     }
 }

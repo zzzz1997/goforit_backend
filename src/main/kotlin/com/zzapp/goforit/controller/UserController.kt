@@ -43,6 +43,7 @@ class UserController {
      */
     @RequestMapping("")
     fun user(@TokenId id: Long): ResponseResult<User> {
+        println(id)
         return ResponseUtil.success(userRepository.findById(id).get())
     }
 
@@ -54,10 +55,10 @@ class UserController {
     fun login(username: String, password: String): ResponseResult<User> {
         val user = userRepository.findUserByUsernameAndPassword(username, DigestUtils.sha1Hex(password))
                 ?: return ResponseUtil.fail("用户名或密码错误")
-        val tokenTime = System.currentTimeMillis() / 1000 + jwtUtil.jwtConfig.expire / 1000
+        val tokenTime = System.currentTimeMillis() + jwtUtil.jwtConfig.expire
         val token = jwtUtil.sign(user.id, user.username, tokenTime) ?: return ResponseUtil.fail("系统错误，请重新尝试")
         user.token = token
-        user.tokenTime = tokenTime.toInt()
+        user.tokenTime = (tokenTime / 1000).toInt()
         return ResponseUtil.success(user)
     }
 
@@ -77,11 +78,28 @@ class UserController {
             user.avatar = RandomUtil.getRandomAvatar()
             user.createdTime = System.currentTimeMillis() / 1000
             user = userRepository.save(user)
-            val tokenTime = System.currentTimeMillis() / 1000 + jwtUtil.jwtConfig.expire / 1000
+            val tokenTime = System.currentTimeMillis() + jwtUtil.jwtConfig.expire
             val token = jwtUtil.sign(user.id, user.username, tokenTime) ?: return ResponseUtil.fail("系统错误，请重新尝试")
             user.token = token
-            user.tokenTime = tokenTime.toInt()
+            user.tokenTime = (tokenTime / 1000).toInt()
             return ResponseUtil.success(user)
+        }
+    }
+
+    /**
+     * 用户设置
+     */
+    @RequestMapping(value = ["/set"], method = [RequestMethod.POST])
+    fun set(@TokenId id: Long, language: Int, startDayOfWeek: Int): ResponseResult<Boolean> {
+        val optional = userRepository.findById(id)
+        return if (optional.isPresent) {
+            val user = optional.get()
+            user.language = language
+            user.startDayOfWeek = startDayOfWeek
+            userRepository.save(user)
+            ResponseUtil.success()
+        } else {
+            ResponseUtil.fail("用户信息不存在")
         }
     }
 }

@@ -25,12 +25,12 @@ class User {
     // 头像
     var avatar = ""
 
+    // 语言
+    var language = 0
+
     // 星期开始日期
     @Column(name = "start_day_of_week")
     var startDayOfWeek = 0
-
-    // 语言
-    var language = 0
 
     // token
     var token = ""

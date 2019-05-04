@@ -18,9 +18,10 @@ class ResponseUtil {
          *
          * @return 返回体对象
          */
-        fun <T> success(): ResponseResult<T> {
-            return ResponseResult<T>().setCode(ResponseCode.SUCCESS)
+        fun success(): ResponseResult<Boolean> {
+            return ResponseResult<Boolean>().setCode(ResponseCode.SUCCESS)
                     .setMessage(SUCCESS)
+                    .setData(true)
         }
 
         /**
