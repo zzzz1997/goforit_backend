@@ -90,12 +90,13 @@ class UserController {
      * 用户设置
      */
     @RequestMapping(value = ["/set"], method = [RequestMethod.POST])
-    fun set(@TokenId id: Long, language: Int, startDayOfWeek: Int): ResponseResult<Boolean> {
+    fun set(@TokenId id: Long, language: Int, startDayOfWeek: Int, checkMode: Int): ResponseResult<Boolean> {
         val optional = userRepository.findById(id)
         return if (optional.isPresent) {
             val user = optional.get()
             user.language = language
             user.startDayOfWeek = startDayOfWeek
+            user.checkMode = checkMode
             userRepository.save(user)
             ResponseUtil.success()
         } else {

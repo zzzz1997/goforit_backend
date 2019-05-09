@@ -32,6 +32,10 @@ class User {
     @Column(name = "start_day_of_week")
     var startDayOfWeek = 0
 
+    // 确定模式
+    @Column(name = "check_mode")
+    var checkMode = 0
+
     // token
     var token = ""
 
