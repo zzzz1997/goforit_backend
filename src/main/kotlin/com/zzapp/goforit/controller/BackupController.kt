@@ -5,7 +5,8 @@ import com.zzapp.goforit.annotation.TokenId
 import com.zzapp.goforit.entity.Backup
 import com.zzapp.goforit.entity.ResponseResult
 import com.zzapp.goforit.repository.BackupRepository
-import com.zzapp.goforit.util.ResponseUtil
+import com.zzapp.goforit.util.ResponseUtilObject
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 class BackupController {
 
     // 备份仓库对象
+    @Autowired
     lateinit var backupRepository: BackupRepository
 
     /**
@@ -26,7 +28,7 @@ class BackupController {
      */
     @RequestMapping("/list")
     fun list(@TokenId userId: Long): ResponseResult<List<Backup>> {
-        return ResponseUtil.success(backupRepository.findBackupsByUserId(userId))
+        return ResponseUtilObject.success(backupRepository.findBackupsByUserId(userId))
     }
 
     /**
@@ -37,9 +39,9 @@ class BackupController {
     fun detail(@PathVariable id: Long, @TokenId userId: Long): ResponseResult<Backup> {
         val backup = backupRepository.findBackupsByIdAndUserId(id, userId)
         return if (backup != null) {
-            ResponseUtil.success(backup)
+            ResponseUtilObject.success(backup)
         } else {
-            ResponseUtil.fail("备份信息不存在")
+            ResponseUtilObject.fail("备份信息不存在")
         }
     }
 
@@ -53,7 +55,7 @@ class BackupController {
         backupData.name = name
         backupData.backup = backup
         backupData.createdTime = System.currentTimeMillis() / 1000
-        return ResponseUtil.success(backupRepository.save(backupData))
+        return ResponseUtilObject.success(backupRepository.save(backupData))
     }
 
     /**
@@ -65,6 +67,6 @@ class BackupController {
         backup.id = id
         backup.userId = userId
         backupRepository.delete(backup)
-        return ResponseUtil.success()
+        return ResponseUtilObject.success()
     }
 }

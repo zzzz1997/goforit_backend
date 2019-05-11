@@ -12,3 +12,10 @@ spring:
 jwt:
   expire: 2592000000 # 30 * 24 * 60 * 60 * 1000
   secret: d8fdfdace5250e89ad1bb0ca35d2a248
+
+oss:
+  fileUrl: https://zzzz1997.oss-cn-beijing.aliyuncs.com/
+  endpoint: http://oss-cn-beijing.aliyuncs.com
+  accessKeyId: LTAIgHf7ovmpuL2Q
+  accessKeySecret: RPA1VxxoKD1N5tt06yjqvoAHp75vBP
+  bucketName: zzzz1997

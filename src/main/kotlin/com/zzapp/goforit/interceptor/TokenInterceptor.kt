@@ -2,12 +2,11 @@ package com.zzapp.goforit.interceptor
 
 import com.zzapp.goforit.annotation.WithoutAuth
 import com.zzapp.goforit.util.JWTUtil
-import com.zzapp.goforit.util.ResponseUtil
+import com.zzapp.goforit.util.ResponseUtilObject
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
-import java.lang.Exception
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -33,7 +32,7 @@ class TokenInterceptor: HandlerInterceptorAdapter() {
             if (id == 0) {
                 response.characterEncoding = "UTF-8"
                 response.contentType = "application/json; charset=utf-8"
-                response.writer.write(ResponseUtil.fail<Boolean>("token错误").toJsonString())
+                response.writer.write(ResponseUtilObject.fail<Boolean>("token错误").toJsonString())
                 return false
             }
         } else {
