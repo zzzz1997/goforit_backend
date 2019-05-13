@@ -1,6 +1,5 @@
 package com.zzapp.goforit.entity
 
-import com.fasterxml.jackson.annotation.JsonView
 import javax.persistence.*
 
 /**
@@ -9,11 +8,6 @@ import javax.persistence.*
 @Entity
 @Table(name = "backup")
 class Backup {
-
-    /**
-     * 备份详情数据接口
-     */
-    interface BackupDetail
 
     // id
     @Id
@@ -28,7 +22,6 @@ class Backup {
     var name = ""
 
     // 备份数据
-    @JsonView(BackupDetail::class)
     var backup = ""
 
     // 注册时间

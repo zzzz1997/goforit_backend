@@ -1,6 +1,5 @@
 package com.zzapp.goforit.controller
 
-import com.fasterxml.jackson.annotation.JsonView
 import com.zzapp.goforit.annotation.TokenId
 import com.zzapp.goforit.entity.Backup
 import com.zzapp.goforit.entity.ResponseResult
@@ -28,13 +27,16 @@ class BackupController {
      */
     @RequestMapping("/list")
     fun list(@TokenId userId: Long): ResponseResult<List<Backup>> {
-        return ResponseUtilObject.success(backupRepository.findBackupsByUserId(userId))
+        val list = backupRepository.findBackupsByUserId(userId)
+        list.forEach {
+            it.backup = ""
+        }
+        return ResponseUtilObject.success(list)
     }
 
     /**
      * 备份详情
      */
-    @JsonView(Backup.BackupDetail::class)
     @RequestMapping("/detail/{id}")
     fun detail(@PathVariable id: Long, @TokenId userId: Long): ResponseResult<Backup> {
         val backup = backupRepository.findBackupsByIdAndUserId(id, userId)
